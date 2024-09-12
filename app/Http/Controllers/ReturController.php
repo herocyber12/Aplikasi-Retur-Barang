@@ -7,9 +7,11 @@ use App\Models\Kategori;
 use App\Models\Produk;
 use App\Models\Retur;
 use App\Models\Stock;
+use App\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\ServiceProvider;
 use App\Exports\ReturExportBaik;
@@ -29,6 +31,7 @@ class ReturController extends Controller
 
     public function index()
     {
+        
         $returs = Retur::with('produk')->get();
         return view('dataretur',compact('returs'));
     }

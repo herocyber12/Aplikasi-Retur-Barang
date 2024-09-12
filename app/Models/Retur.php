@@ -15,4 +15,9 @@ class Retur extends Model
     {
         return $this->belongsTo(Produk::class,'produks_id');
     }
+
+    public function retur_pembelian()
+    {
+        return $this->hasMany(ReturPembelian::class,'retur_id');
+    }
 }

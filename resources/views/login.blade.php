@@ -41,7 +41,10 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Login Sistem</h1>
                                     </div>
-                                    <form class="user" method="post" action="">
+                                    @if (session('error'))
+                                        <div class="alert alert-danger">{{session('error')}}</div>
+                                    @endif
+                                    <form class="user" method="post" action="{{url('/login')}}">
                                         @csrf
                                         <div class="mb-3">
                                             <input type="email" name="email" class="form-control form-control-user"

@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReturController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ReturPembelianController;
 use Carbon\Carbon;
 use App\Models\Stock;
 use App\Exports\StockExport;
@@ -16,13 +18,22 @@ use Maatwebsite\Excel\Facades\Excel;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::controller(ReturController::class)->group(function(){
-    Route::get('/dataretur','index')->name('retur.index');
-    Route::post('/dataretur','store')->name('retur.store');
-    Route::post('/updatedataretur','update')->name('retur.update');
-    Route::get('/laporan-stok','downloadLaporan')->name('retur.getLaporan');
-    Route::get('/hapus-dataretur/{id}','destroy')->name('retur.destroy');
+Route::controller(AuthController::class)->group(function(){
+    Route::get('/login','index')->name('login');
+    Route::post('/login','login');
+    Route::get('/logout','index')->name('logout');
+});
+Route::middleware('auth')->group(function(){
+    Route::controller(ReturController::class)->group(function(){
+        Route::get('/dataretur','index')->name('retur.index');
+        Route::post('/dataretur','store')->name('retur.store');
+        Route::post('/updatedataretur','update')->name('retur.update');
+        Route::get('/laporan-stok','downloadLaporan')->name('retur.getLaporan');
+        Route::get('/hapus-dataretur/{id}','destroy')->name('retur.destroy');
+    });
+    Route::controller(ReturPembelianController::class)->group(function(){
+        Route::get('/barang-rusak','index')->name('returpembelian.index');
+    });
 });
 Route::get('/', function () {
     return view('login');
