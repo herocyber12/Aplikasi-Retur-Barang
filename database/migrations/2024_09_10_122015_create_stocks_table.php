@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pembelians', function (Blueprint $table) {
+        Schema::create('stocks', function (Blueprint $table) {
             $table->id();
-            $table->string('nota_pembelian');
-            $table->unsignedBigInteger('id_produks');
-            $table->unsignedBigInteger('id_pengiriman');
-            $table->enum('metode_pembayaran',['COD','Tranfer']);
+            $table->unsignedBigInteger('produk_id');
+            $table->integer('stok');
+            $table->integer('stok_masuk');
+            $table->integer('stok_keluar');
+            $table->date('tanggal');
             $table->timestamps();
+
+            $table->foreign('produk_id')->references('id')->on('produks');
         });
     }
 
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pembelians');
+        Schema::dropIfExists('stocks');
     }
 };
