@@ -25,5 +25,6 @@ Route::controller(ReturController::class)->group(function(){
     Route::get('/hapus-dataretur/{id}','destroy')->name('retur.destroy');
 });
 Route::get('/', function () {
+    return view('login');
     // return view('welcome');
 });
