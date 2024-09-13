@@ -33,7 +33,6 @@ class StockExport implements FromArray,WithHeadings
                 'Bulan' => $this->data['bulan'][$index],
                 'Tanggal Input Terbaru' => $this->data['tanggal_terbaru'][$index],
             ];
-
         };
 
         return $output;

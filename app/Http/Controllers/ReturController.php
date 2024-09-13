@@ -237,4 +237,26 @@ class ReturController extends Controller
     {
         return $this->laporanstok->generateStockReport();
     }
+
+    public function kirimBarang($id)
+    {
+        $id = Crypt::decrypt($id);
+        $data = Retur::where('id',$id)->first();
+        $stok = Stock::where('produk_id',$data->produks_id)->latest()->first();
+        
+        $data->kondisi_barang = 'Rusak(Sudah Diproses)';
+        $data->save();
+        
+        $stok_sekarang = is_null($stok) ? 0 :$stok->stok - $data->jumlah_barang;
+        $stok_keluar = $data->jumlah_barang;
+        
+        Stock::where('produk_id',$data->produks_id)->update([
+            'stok' => $stok_sekarang,
+            'stok_masuk' => 0,
+            'stok_keluar' => $data->jumlah_barang,
+            'tanggal' => Carbon::now()->format('Y-m-d'),
+        ]);
+
+        return redirect()->back()->with('success','Berhasil Entri Barang Keluar');
+    }
 }

@@ -8,7 +8,6 @@
 				<div class="ms-auto">
 					<button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Buat
 						Data Retur Pembelian</button>
-					<button class="btn btn-primary btn-sm"> Export Data </button>
 				</div>
 				<!-- Modal -->
 				<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -21,7 +20,7 @@
 									aria-label="Close"></button>
 							</div>
 							<div class="modal-body">
-								<form action="{{route('retur.store')}}" method="post" class="row">
+								<form action="{{route('returpembelian.store')}}" method="post" class="row">
 									@csrf
 									<!--
 										<div class="mb-3">
@@ -38,10 +37,10 @@
 										<input type="text" name="nota_retur_pembelian" class="form-control" placeholder="Masukan Nota Pembelian">
 									</div>
 									<div class="mb-3">
-										<label for="">Barang Yang Di Retur</label>
+										<label for="">Barang Yang Di Retur <span class="text-danger" style="font-size:12px;">*Data yang tampil merupakan kondisi rusak</span></label>
 										<select name="retur" id="" class="form-control">
 											@foreach($returs as $rt)
-												<option value="{{Crypt::encrypt($rt->id)}}"> {{$rt->produk->nama_produk ?? 'Data Barang Undefined'}} </option>
+												<option value="{{Crypt::encrypt($rt->id)}}"> {{$rt->produk->nama_produk ?? 'Data Barang Undefined'}} ({{$rt->tgl_masuk_gudang}}) </option>
 											@endforeach
 										</select>
 									</div>

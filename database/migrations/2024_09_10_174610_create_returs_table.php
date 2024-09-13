@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('alamat_supplier');
             $table->date('tgl_masuk_gudang');
             $table->integer('jumlah_barang');
-            $table->enum('kondisi_barang',['Baik','Rusak'])->default('Baik');
+            $table->enum('kondisi_barang',['Baik','Rusak','Rusak(Sudah Diproses)'])->default('Baik');
             $table->timestamps();
 
             $table->foreign('produks_id')->references('id')->on('produks');

@@ -27,12 +27,18 @@ Route::middleware('auth')->group(function(){
     Route::controller(ReturController::class)->group(function(){
         Route::get('/dataretur','index')->name('retur.index');
         Route::post('/dataretur','store')->name('retur.store');
+        Route::get('/dataretur/{id}','kirimBarang')->name('retur.kirim');
         Route::post('/updatedataretur','update')->name('retur.update');
         Route::get('/laporan-stok','downloadLaporan')->name('retur.getLaporan');
         Route::get('/hapus-dataretur/{id}','destroy')->name('retur.destroy');
     });
     Route::controller(ReturPembelianController::class)->group(function(){
         Route::get('/barang-rusak','index')->name('returpembelian.index');
+        Route::post('/barang-rusak','store')->name('returpembelian.store');
+        Route::post('/update-retur-pembelian','update')->name('returpembelian.update');
+        Route::get('/laporan-retur-pembelian','cetakLaporanRetur')->name('returpembelian.laporanRetur');
+        Route::get('/data-barang-retur','returShow')->name('returpembelian.returShow');
+        Route::get('/hapus-dataretur-pembelian/{id}','destroy')->name('returpembelian.destroy');
     });
 });
 Route::get('/', function () {

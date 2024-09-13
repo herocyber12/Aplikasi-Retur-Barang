@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             // KategoriSeed::class,
             // ProdukSeeder::class,
             // StockSeeder::class
-            // RoleSeeder::class
+            RoleSeeder::class,
             UserSeeder::class
         ]);
     }

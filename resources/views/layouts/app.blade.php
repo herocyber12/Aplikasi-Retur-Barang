@@ -7,6 +7,9 @@
     @if (Session::has('kondisibaik'))
         <meta http-equiv="refresh" content="3;url={{ route('retur.getLaporan')}}">
     @endif
+    @if (Session::has('laporanreturpembelian'))
+        <meta http-equiv="refresh" content="3;url={{ route('returpembelian.laporanRetur')}}">
+    @endif
     <title>Sistem Retur Pembelian</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -66,6 +69,14 @@
                             <use xlink:href="#speedometer2"></use>
                         </svg>
                         Data Barang Rusak
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{route('returpembelian.returShow')}}" class="nav-link text-white {{  request()->routeIs('returpembelian.returShow') ? 'active':'' }}">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#speedometer2"></use>
+                        </svg>
+                        Data Barang di Retur
                     </a>
                 </li>
 
