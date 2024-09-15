@@ -4,7 +4,7 @@
 	<div class="col-xl-12">
 		<div class="card shadow">
 			<div class="card-header d-md-flex">
-				<h6>Data Barang Gudang</h6>
+				<h6>Data Retur Pembelian</h6>
 			</div>
 			<div class="card-body">
 				<div class="table-responsive">
@@ -46,13 +46,13 @@
 								<td class="align-middle">
 									<div class="d-flex">
 										@if ($retur->retur->kondisi_barang == "Rusak(Sudah Diproses)")
-											<div class="text-center bg-primary rounded-pill text-white"> {{$retur->retur->kondisi_barang ?? 'N/A'}} </div>
+										<div class="text-center bg-primary rounded-pill text-white"> Dalam Pengiriman Ke Supplier </div>
 										@else
-											@if (Auth::user()->id_role === 3)
-											<button type="button" class="btn btn-sm btn-primary text-white" onclick="window.location.href='{{route('retur.kirim',Crypt::encrypt($retur->retur->id))}}'"> Entri Barang Keluar </button>
+										@if (Auth::user()->id_role === 3)
+											<button type="button" class="btn btn-sm btn-primary text-white krim" data-id="{{Crypt::encrypt($retur->retur->id)}}"> Entri Barang Keluar </button>
 											@else
-											<button type="button" class="btn btn-sm btn-warning text-white ms-2" data-bs-toggle="modal" data-bs-target="#editModal{{$retur->id}}">Edit</button>
-											<button type="button" class="btn btn-sm btn-danger text-white ms-2" onclick="window.location.href='{{route('returpembelian.destroy',$retur->id)}}'">Hapus</button>
+											<button type="button" class="btn btn-sm btn-warning text-white ms-2" data-bs-toggle="modal" data-bs-target="#editModal{{$retur->id}}"> <i class="fa fa-pen-to-square"></i> Edit</button>
+											<button type="button" class="btn btn-sm btn-danger text-white ms-2" onclick="window.location.href='{{route('returpembelian.destroy',$retur->id)}}'"> <i class="fa fa-trash-can"></i> Hapus</button>
 
 											<div class="modal fade" id="editModal{{$retur->id}}" tabindex="-1" aria-labelledby="exampleModalLabel{{$retur->id}}" aria-hidden="true">
 												<div class="modal-dialog modal-dialog-centered modal-lg">
@@ -99,7 +99,7 @@
 							
 															</div>
 															<div class="modal-footer">
-																<button type="submit" class="btn btn-primary">Buat</button>
+																<button type="submit" class="btn btn-primary">Ubah</button>
 															</div>
 														</form>
 													</div>
@@ -119,4 +119,29 @@
 		</div>
 	</div>
 </div>
+@endsection
+@section('js')
+<script>
+    $(document).ready(function(){
+        $('.krim').on('click', function(){
+			var id = $(this).data('id');
+            $.ajax({
+                url: "{{ route('retur.kirim', '') }}/" + id,
+                type: "GET",
+                success: function(data){
+					console.log(data);
+                    Swal.fire({
+            		    icon: data.success,
+            		    title: 'Error',
+            		    text: data.message,
+            		});
+                },
+                error: function(xhr, status, error) {
+                    // Tangani error jika ada
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
 @endsection

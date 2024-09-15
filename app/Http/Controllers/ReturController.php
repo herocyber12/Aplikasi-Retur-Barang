@@ -9,6 +9,7 @@ use App\Models\Retur;
 use App\Models\Stock;
 use App\Models\Role;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Hash;
@@ -240,23 +241,49 @@ class ReturController extends Controller
 
     public function kirimBarang($id)
     {
-        $id = Crypt::decrypt($id);
-        $data = Retur::where('id',$id)->first();
-        $stok = Stock::where('produk_id',$data->produks_id)->latest()->first();
-        
-        $data->kondisi_barang = 'Rusak(Sudah Diproses)';
-        $data->save();
-        
-        $stok_sekarang = is_null($stok) ? 0 :$stok->stok - $data->jumlah_barang;
-        $stok_keluar = $data->jumlah_barang;
-        
-        Stock::where('produk_id',$data->produks_id)->update([
-            'stok' => $stok_sekarang,
-            'stok_masuk' => 0,
-            'stok_keluar' => $data->jumlah_barang,
-            'tanggal' => Carbon::now()->format('Y-m-d'),
-        ]);
-
-        return redirect()->back()->with('success','Berhasil Entri Barang Keluar');
+        try {
+            // Dekripsi ID dan ambil data
+            $id = Crypt::decrypt($id);
+            $data = Retur::findOrFail($id);
+    
+            // Ambil stok terakhir untuk produk terkait
+            $stok = Stock::where('produk_id', $data->produks_id)->latest()->first();
+    
+            // Hitung stok saat ini
+            $stok_sekarang = optional($stok)->stok ? $stok->stok - $data->jumlah_barang : 0;
+            $stok_keluar = $data->jumlah_barang;
+    
+            // Upsert stok
+            Stock::updateOrCreate(
+                ['produk_id' => $data->produks_id],
+                [
+                    'retur_id' => $data->id,
+                    'stok' => $stok_sekarang,
+                    'stok_masuk' => 0,
+                    'stok_keluar' => $stok_keluar,
+                    'tanggal' => Carbon::now()->format('Y-m-d'),
+                ]
+            );
+    
+            // Update kondisi barang
+            $data->update([
+                'kondisi_barang' => 'Rusak(Sudah Diproses)',
+            ]);
+    
+            // Berikan respons JSON yang sukses
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Barang akan segera dikirim ke supplier.',
+                'title' => 'Berhasil',
+            ], 200);
+        } catch (\Exception $e) {
+            // Tangani error dan berikan respons JSON
+            return response()->json([
+                'status' => 'error',
+                'title' => 'Gagal',
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }
+

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('produk_id');
+            $table->unsignedBigInteger('retur_id')->nullable();
             $table->integer('stok');
             $table->integer('stok_masuk');
             $table->integer('stok_keluar');
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('produk_id')->references('id')->on('produks');
+            $table->foreign('retur_id')->references('id')->on('returs');
         });
     }
 

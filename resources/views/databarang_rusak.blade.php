@@ -6,7 +6,7 @@
 			<div class="card-header d-md-flex">
 				<h6>Data Barang Gudang</h6>
 				<div class="ms-auto">
-					<button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Buat
+					<button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal" {{Auth::user()->id_role !== 1 ? 'disabled' : ''}}> <i class="fa fa-plus"></i> Buat
 						Data Retur Pembelian</button>
 				</div>
 				<!-- Modal -->
@@ -72,11 +72,11 @@
 								<th>Kode Barang</th>
 								<th>Nama Barang</th>
 								<th>Jenis Barang</th>
-								<th>Jumlah Barang Masuk</th>
+								<th>Jumlah Barang</th>
 								<th>Supplier</th>
 								<th>Alamat Supplier</th>
 								<th>No Hp Supplier</th>
-								<th>Kualitas Barang Masuk</th>
+								<th>Kualitas Barang</th>
 								<th>Tanggal Masuk Gudang</th>
 							</tr>
 						</thead>

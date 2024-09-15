@@ -6,7 +6,7 @@
 			<div class="card-header d-md-flex">
 				<h6>Data Barang Gudang</h6>
 				<div class="ms-auto">
-					<button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Buat
+					<button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal"> <i class="fa fa-plus"></i> Buat
 						Data Barang Masuk</button>
 				</div>
 				<!-- Modal -->
@@ -15,7 +15,7 @@
 					<div class="modal-dialog modal-dialog-centered modal-lg">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="exampleModalLabel">Form Buat Data Retur</h5>
+								<h5 class="modal-title" id="exampleModalLabel">Form Pendataan Barang</h5>
 								<button type="button" class="btn-close" data-bs-dismiss="modal"
 									aria-label="Close"></button>
 							</div>
@@ -38,7 +38,7 @@
 										@enderror
 									</div>
 								
-									<div class="mb-3">
+									<div class="mb-3 col-xl-6">
 										<label for="">Jenis Barang</label>
 										<input type="text" name="jenis_barang" class="form-control @error('jenis_barang') is-invalid @enderror" placeholder="Masukan Jenis Barang" value="{{ old('jenis_barang') }}">
 										@error('jenis_barang')
@@ -46,7 +46,7 @@
 										@enderror
 									</div>
 								
-									<div class="mb-3">
+									<div class="mb-3 col-xl-6">
 										<label for="">Harga Per Produk</label>
 										<input type="numeric" name="harga_produk" class="form-control @error('harga_produk') is-invalid @enderror" placeholder="Masukan Harga Produk" value="{{ old('harga_produk') }}">
 										@error('harga_produk')
@@ -87,7 +87,7 @@
 									</div>
 								
 									<div class="mb-3 col-xl-4">
-										<label for="">Jumlah Retur</label>
+										<label for="">Jumlah Barang</label>
 										<input type="number" class="form-control @error('jumlah_barang') is-invalid @enderror" name="jumlah_barang" placeholder="Masukan Jumlah Retur" value="{{ old('jumlah_barang') }}">
 										@error('jumlah_barang')
 										<div class="invalid-feedback">{{ $message }}</div>
@@ -147,15 +147,23 @@
 								<td class="align-middle"> {{$retur->tgl_masuk_gudang}} </td>
 								<td class="align-middle">
 									<div class="d-flex">
-	
-										<button type="button" class="btn btn-sm btn-warning text-white ms-2" data-bs-toggle="modal" data-bs-target="#editModal{{$retur->id}}">Edit</button>
-										<button type="button" class="btn btn-sm btn-danger text-white ms-2" onclick="window.location.href='{{route('retur.destroy',$retur->id)}}'">Hapus</button>
+										@if (Auth::user()->id_role === 1)
+											@php
+												$disabled = 'disabled';
+											@endphp
+										@else
+											@php
+												$disabled = '';
+											@endphp
+										@endif
+										<button type="button" class="btn btn-sm btn-warning text-white ms-2" data-bs-toggle="modal" data-bs-target="#editModal{{$retur->id}}" {{$disabled}}> <i class="fa fa-pen-to-square"></i> Edit</button>
+										<button type="button" class="btn btn-sm btn-danger text-white ms-2" onclick="window.location.href='{{route('retur.destroy',$retur->id)}}'" {{$disabled}}> <i class="fa fa-trash-can"></i> Hapus</button>
 
 										<div class="modal fade" id="editModal{{$retur->id}}" tabindex="-1" aria-labelledby="exampleModalLabel{{$retur->id}}" aria-hidden="true">
 											<div class="modal-dialog modal-dialog-centered modal-lg">
 												<div class="modal-content">
 													<div class="modal-header">
-														<h5 class="modal-title" id="exampleModalLabel{{$retur->id}}">Form Edit Data Retur</h5>
+														<h5 class="modal-title" id="exampleModalLabel{{$retur->id}}">Form Edit Pendataan Barang</h5>
 														<button type="button" class="btn-close" data-bs-dismiss="modal"
 															aria-label="Close"></button>
 													</div>
@@ -181,11 +189,11 @@
 																<label for="">Nama Barang</label>
 																<input type="text" name="nama_produk_edit" class="form-control" placeholder="Masukan Kode Barang" value="{{$retur->produk->nama_produk}}">
 															</div>
-															<div class="mb-3">
+															<div class="mb-3 col-xl-6">
 																<label for="">Jenis Barang</label>
 																<input type="text" name="jenis_barang_edit" class="form-control" placeholder="Masukan Kode Barang" value="{{$retur->produk->jenis_barang}}">
 															</div>
-															<div class="mb-3">
+															<div class="mb-3 col-xl-6">
 																<label for="">Harga Per Produk</label>
 																<input type="numeric" name="harga_produk_edit" class="form-control" placeholder="Masukan Kode Barang" value="{{$retur->produk->harga_produk}}">
 															</div>
@@ -207,7 +215,7 @@
 																<input type="date" class="form-control" name="tgl_masuk_gudang_edit" placeholder="Masukan Tanggal Barang" value="{{$retur->tgl_barang_masuk}}">
 															</div>
 															<div class="mb-3 col-xl-4">
-																<label for="">Jumlah Retur</label>
+																<label for="">Jumlah Barang</label>
 																<input type="number" class="form-control" name="jumlah_barang_edit" placeholder="Masukan Jumlah Retur" value="{{$retur->jumlah_barang}}">
 															</div>
 															<div class="mb-3 col-xl-4">

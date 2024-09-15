@@ -25,9 +25,17 @@ class AuthController extends Controller
         
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            return redirect()->route('retur.index');
-        }
 
+            if(Auth::user()->id_role === 1||Auth::user()->id_role === 3)
+            {
+                return redirect()->route('returpembelian.index');
+            } else if (Auth::user()->id_role === 2)
+            {
+                return redirect()->route('retur.index');
+            } else {
+                return redirect()->route('login')->with('error', 'Akun yang anda masukan tidak terdaftar');
+            }
+        }
         return redirect()->route('login')->with('error', 'Email Atau Password Anda Salah');
     }
 

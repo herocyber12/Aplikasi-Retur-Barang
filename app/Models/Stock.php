@@ -11,6 +11,11 @@ class Stock extends Model
     protected $table="stocks";
     protected $guarded = [];
 
+    public function retur()
+    {
+        return $this->belongsTo(Retur::class,'retur_id');
+    }
+
     public function produk()
     {
         return $this->belongsTo(Produk::class,'produk_id');

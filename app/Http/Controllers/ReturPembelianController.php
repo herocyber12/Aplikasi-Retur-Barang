@@ -101,7 +101,6 @@ class ReturPembelianController extends Controller
     {
         $dataArray = Session::get('data_excel');
         
-        // dd($dataArray);
         Session::forget('data_excel');
 
         return Excel::download(new LaporanReturPembelian($dataArray), 'Laporan Retur Pembelian -'.$dataArray['nota'].'-'.$dataArray['kode_barang'].'-'.$dataArray['tgl_datang'].'.xlsx');
