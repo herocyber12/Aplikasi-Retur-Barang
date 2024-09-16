@@ -38,6 +38,33 @@ class AuthController extends Controller
         }
         return redirect()->route('login')->with('error', 'Email Atau Password Anda Salah');
     }
+    
+    public function regis(Request $request)
+    {
+      $validator = Validator::make($request->all(),[
+        'username' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|password',
+        'role' => 'required|exist:roles,id'
+        ]);
+        
+        if($validator->fails()){
+          return redirect()->back()->withError($validator)->withInput();
+        }
+        
+        $insert = User::create([
+          'username' => $request->username;
+          'email' => $request->email;
+          'password' => $request->password;
+          'id_role' => $request->role;
+          ]);
+          
+      if($insert){
+        return redirect()->back()->with('success','Berhasil Membuat Akun')
+      }
+      
+      return redirect()->back->with('error','Gagal membuat akun');
+    }
 
     public function logout()
     {
