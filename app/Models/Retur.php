@@ -21,8 +21,8 @@ class Retur extends Model
         return $this->hasMany(ReturPembelian::class,'retur_id');
     }
 
-    Public function stocks()
+    public function stocks()
     {
-        return $this->hasMany(Stock::class,'retur_id');
+        return $this->hasMany(Stock::class, 'retur_id');
     }
 }

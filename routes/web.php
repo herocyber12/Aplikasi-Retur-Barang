@@ -36,10 +36,11 @@ Route::middleware('auth')->group(function(){
     });
     Route::middleware(['role:1,3'])->group(function () {
         Route::get('/dataretur/{id}',[ReturController::class,'kirimBarang'])->name('retur.kirim');
+        Route::get('/barang-keluar',[ReturController::class,'laporanStokKeluar'])->name('retur.getBarangKeluar');
         Route::controller(ReturPembelianController::class)->group(function(){
             Route::get('/barang-rusak','index')->name('returpembelian.index');
             Route::post('/barang-rusak','store')->name('returpembelian.store');
-            Route::post('/update-retur-pembelian','update')->name('returpembelian.update');
+            Route::post('/update-retur-pembelian/{id}','update')->name('returpembelian.update');
             Route::get('/laporan-retur-pembelian','cetakLaporanRetur')->name('returpembelian.laporanRetur');
             Route::get('/data-barang-retur','returShow')->name('returpembelian.returShow');
             Route::get('/hapus-dataretur-pembelian/{id}','destroy')->name('returpembelian.destroy');
@@ -49,10 +50,11 @@ Route::middleware('auth')->group(function(){
     Route::controller(StockKeluarController::class)->group(function(){
         Route::get('/laporan-barang-keluar','index')->name('laporan.keluar');
         Route::get('/laporan-barang-masuk','index')->name('laporan.masuk');
+        Route::get('/stok','stok_semua')->name('stok');
     });
 
 });
 Route::get('/', function () {
-    return view('login');
+    return redirect()->route('login');
     // return view('welcome');
 });

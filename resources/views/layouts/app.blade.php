@@ -108,6 +108,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{route('stok')}}" class="nav-link text-white {{ request()->routeIs('stok') ? 'active':'' }}">
+                        <i class="fa fa-list"></i>
+                        Stok
+                    </a>
+                </li>
+                <li class="nav-item">
                     <button class="btn btn-secondary d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
                         <i class="fa fa-arrow-left"></i>
                     </button>

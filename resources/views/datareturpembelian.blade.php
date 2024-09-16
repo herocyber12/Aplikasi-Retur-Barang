@@ -27,9 +27,8 @@
 								<th>Aksi</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id='datanya'>
 							@foreach ($returs as $retur )
-								
 							<tr style="font-size:12px;">
 								<td class="align-middle"> {{$retur->nota_retur_pembelian ?? 'N/A'}} </td>
 								<td class="align-middle"> {{$retur->retur->produk->kode_barang ?? 'N/A'}} </td>
@@ -63,7 +62,7 @@
 																aria-label="Close"></button>
 														</div>
 														<div class="modal-body">
-															<form action="{{route('returpembelian.update')}}" method="post" class="row">
+															<form action="{{route('returpembelian.update',['id' => $retur->id])}}" method="post" class="row">
 																@csrf
 																<!--
 																	<div class="mb-3">
@@ -129,16 +128,59 @@
                 url: "{{ route('retur.kirim', '') }}/" + id,
                 type: "GET",
                 success: function(data){
-					console.log(data);
+					var html = '';
+					for(i = 0; i < data.data.length; i++) {
+						var retur = data.data[i];
+						// console.log(retur.retur.kondisi_barang);
+						var produk = retur.retur.produk || {};  // Ambil produk dari retur, jika ada
+						// Buat HTML untuk setiap baris
+						html += `
+							<tr style="font-size:12px;">
+								<td class="align-middle"> ${retur.nota_retur_pembelian ?? 'N/A'} </td>
+								<td class="align-middle"> ${produk.kode_barang ?? 'N/A'} </td>
+								<td class="align-middle"> ${produk.nama_produk ?? 'N/A'} </td>
+								<td class="align-middle"> ${produk.jenis_barang ?? 'Tidak Berkategori'} </td>
+								<td class="align-middle"> ${retur.retur.jumlah_barang} </td>
+								<td class="align-middle"> ${retur.retur.supplier} </td>
+								<td class="align-middle"> ${retur.retur.alamat_supplier} </td>
+								<td class="align-middle"> ${retur.retur.no_hp_supplier} </td>
+								<td class="align-middle"> ${retur.retur.kondisi_barang} </td>
+								<td class="align-middle"> ${retur.retur.tgl_masuk_gudang} </td>
+								<td class="align-middle"> ${retur.alasan_retur} </td>
+								<td class="align-middle"> ${retur.tindakan} </td>
+								<td class="align-middle">
+									<div class="d-flex">
+										${(retur.retur.kondisi_barang === "Rusak(Sudah Diproses)") 
+											? '<div class="text-center bg-primary rounded-pill text-white">Dalam Pengiriman Ke Supplier</div>' 
+											: (data.user_role === 3) // Sesuaikan pengecekan role di sini
+											? '<button type="button" class="btn btn-sm btn-primary text-white krim" data-id="'+ retur.id +'">Entri Barang Keluar</button>' 
+											: ''
+										}
+									</div>
+								</td>
+							</tr>
+						`;
+					}
+
+					$('#datanya').html(html);
                     Swal.fire({
-            		    icon: data.success,
-            		    title: 'Error',
+            		    icon: data.status,
+            		    title: 'Berhasil',
             		    text: data.message,
             		});
+
+					if(data.status == "success")
+					{
+						console.log('{{route("retur.getBarangKeluar")}}');
+						window.location.href='{{route("retur.getBarangKeluar")}}';
+					}
                 },
                 error: function(xhr, status, error) {
-                    // Tangani error jika ada
-                    console.error(xhr.responseText);
+					Swal.fire({
+            		    icon: 'error',
+            		    title: 'Error',
+            		    text: xhr.responseText,
+            		});
                 }
             });
         });

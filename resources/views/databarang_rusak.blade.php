@@ -4,7 +4,7 @@
 	<div class="col-xl-12">
 		<div class="card shadow">
 			<div class="card-header d-md-flex">
-				<h6>Data Barang Gudang</h6>
+				<h6>Data Barang Rusak</h6>
 				<div class="ms-auto">
 					<button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal" {{Auth::user()->id_role !== 1 ? 'disabled' : ''}}> <i class="fa fa-plus"></i> Buat
 						Data Retur Pembelian</button>

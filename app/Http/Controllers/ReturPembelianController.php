@@ -18,14 +18,14 @@ class ReturPembelianController extends Controller
      */
     public function index()
     {
-        $returs = Retur::where('kondisi_barang','Rusak(Sudah Diproses)')->orWhere('kondisi_barang','Rusak')->whereNotNull('created_at')->get();
+        $returs = Retur::where('kondisi_barang','Rusak(Sudah Diproses)')->orWhere('kondisi_barang','Rusak')->whereNotNull('created_at')->orderBy('created_at','DESC')->get();
         return view('databarang_rusak',compact('returs'));
     }
 
     public function returShow()
     {
-        $ret = Retur::where('kondisi_barang','Rusak')->whereNotNull('created_at')->get();
-        $returs = ReturPembelian::with('retur.produk')->get();
+        $ret = Retur::where('kondisi_barang','Rusak')->whereNotNull('created_at')->orderBy('created_at','DESC')->get();
+        $returs = ReturPembelian::with('retur.produk')->orderBy('created_at','DESC')->get();
         return view('datareturpembelian',compact('returs','ret'));
     }
 
@@ -44,6 +44,7 @@ class ReturPembelianController extends Controller
         if($validator->fails()){
             return redirect()->back()->withErrors($validator)->withInput();
         }
+
         $insert = ReturPembelian::create([
             'nota_retur_pembelian' => $request->nota_retur_pembelian,
             'retur_id' => Crypt::decrypt($request->retur),
@@ -77,7 +78,7 @@ class ReturPembelianController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(),[
             'nota_retur_pembelian_edit' => 'required',
@@ -90,11 +91,17 @@ class ReturPembelianController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
         $update = ReturPembelian::where('id',$id)->update([
-            'nota_retur_pembelian_edit' => $request->nota_retur_pembelian,
-            'retur_id_edit' => Crypt::decrypt($request->retur),
-            'alasan_retur_edit' => $request->alasan_retur,
-            'tindakan_edit' => $request->tindakan
+            'nota_retur_pembelian' => $request->nota_retur_pembelian_edit,
+            'retur_id' => Crypt::decrypt($request->retur_edit),
+            'alasan_retur' => $request->alasan_retur_edit,
+            'tindakan' => $request->tindakan_edit
         ]);
+        if($update)
+        {
+            return redirect()->back()->with('success','Berhasil Update Data');
+        } else {
+            return redirect()->back()->with('error','Gagal Update Data');
+        }
     }
 
     public function cetakLaporanRetur()
@@ -105,6 +112,7 @@ class ReturPembelianController extends Controller
 
         return Excel::download(new LaporanReturPembelian($dataArray), 'Laporan Retur Pembelian -'.$dataArray['nota'].'-'.$dataArray['kode_barang'].'-'.$dataArray['tgl_datang'].'.xlsx');
     }
+    
     /**
      * Remove the specified resource from storage.
      */

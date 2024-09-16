@@ -1,0 +1,65 @@
+----------------------------
+Sistem Retur Pengembalian
+---------------------------
+
+Migrasi v	=> php artisan migrate (nama database taskwd)
+Data Seed v	=> php artisan db:seed
+
+---------------------------
+Alur Aplikasi
+
+Bagian Gudang
+========================
+Bagian Pengiriman Membuat Data Barang Yang Datang Ke Gudang dengan klik tombol "Tambah Stok Barang Masuk" atau "Buat Data Baru Barang Masuk" Jika Kondisi Barang Baik Data akan masuk ke database dan menampilkan laporan di dashboard Admin dan Gudang sekaligus setelah 3 detik data berhasil dibuat maka
+secara otomatis akan membuat laporan stok berupa excel. Dan ketika rusak Admin akan menerima laporan barang yang rusak berupa tampilan table di halaman "Data Barang Rusak"
+========================
+
+Bagian Admin
+========================
+Admin menerima laporan barang yang rusak dari bagian gudang. kemudian membuat data retur barang dengan memasukan nota retur pembelian, barang yang rusak, Tindakan yang diambil, alasannya. Setelah 3 detik data berhasil di buat maka
+secara otomatis akan membuat Laporan retur pembelian berupa excel. Data yang berhasil dibuat akan masuk ke halaman "Data Barang Di Retur"
+=======================
+
+Bagian Pengiriman
+======================
+Setelah admin membuat data yang akan diretur pembelian. Bagian pengiriman akan menerima laporan barang yang diretur dan mengkonfirmasi barang keluar dengan menekan tombol "Entri Barang Keluar" dan secara otomatis akan membuat data barang keluar
+dan mengunduh data laporan barnag keluar berupa excel serta data yang masuk ke database data dapat dilihat di halaman "Data Barang Keluar"
+
+Hak Akses
+--------------------
+Bagian Gudang
+Dapat Mengakses halaman :
+- Data Gudang (Membuat, Mengedit, Menghapus, Melihat Data)
+- Data Barang Masuk (Hanya Melihat Data)
+- Stok (Hanya Melihat)
+
+Bagian Admin
+- Data Gudang (Hanya Melihat)
+- Data Barang Rusak (Hanya Melihat Data Barang Rusak, Membuat data barang yang diretur)
+- Data Barang Di Retur (Mengedit dan Menghapus)
+- Data Barang Masuk (Hanya Melihat Data)
+- Stok (Hanya Melihat)
+
+Bagian Pengiriman
+- Data Gudang (Hanya Melihat)
+- Data Barang Di Retur (Entri Data Barang Keluar berupa Tombol "Entri Barang Keluar")
+- Data Barang Keluar (Hanya Melihat Data)
+- Data Barang Masuk (Hanya Melihat Data)
+- Stok (Hanya Melihat)
+
+Akun
+=======================
+Gudang :
+gudang123@gmail.com
+
+Admin:
+admin123@gmail.com
+
+Pengiriman:
+pengiriman123@gmail.com
+
+Password : 12341234
+======================
+
+
+-

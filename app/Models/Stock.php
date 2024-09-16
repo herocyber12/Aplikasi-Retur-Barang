@@ -13,7 +13,7 @@ class Stock extends Model
 
     public function retur()
     {
-        return $this->belongsTo(Retur::class,'retur_id');
+        return $this->belongsTo(Retur::class, 'retur_id');
     }
 
     public function produk()

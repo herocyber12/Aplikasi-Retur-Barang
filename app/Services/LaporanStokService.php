@@ -10,15 +10,13 @@ use Illuminate\Support\Facades\DB;
 
 class LaporanStokService
 {
-    public function generateStockReport()
+    public function renderLaporanStok()
     {
-        // Set tanggal saat ini
         $tanggal_sekarang = Carbon::now();
         $bulan_sekarang = $tanggal_sekarang->month;
         $tahun_sekarang = $tanggal_sekarang->year;
         $nama_bulan_sekarang = $tanggal_sekarang->translatedFormat('F');
 
-        // Ambil data stok berdasarkan produk
         $data = Stock::with('produk')
             ->select('produk_id', 
             DB::raw('SUM(stok_masuk) as total_stok_masuk'),
@@ -39,7 +37,6 @@ class LaporanStokService
             ->groupBy('produk_id')
             ->get();
 
-        // Siapkan array data untuk di-export
         $dataArray = [
             'kode_barang' => [],
             'nama_produk' => [],
@@ -51,7 +48,6 @@ class LaporanStokService
             'tanggal_terbaru' => []
         ];
 
-        // Loop data untuk memasukkan ke array
         foreach($data as $item)
         {
             $dataArray['kode_barang'][] = $item->produk->kode_barang ?? 'Barang Tidak Ditemukan';
@@ -64,7 +60,6 @@ class LaporanStokService
             $dataArray['tanggal_terbaru'][] = $item->tanggal_terbaru;
         }
 
-        // Download file Excel dengan data laporan stok
         return Excel::download(new StockExport($dataArray), 'Laporan_Stok-'.$tanggal_sekarang->format('Y-m-d').'.xlsx');
     }
 }

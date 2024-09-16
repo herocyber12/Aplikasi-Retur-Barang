@@ -16,8 +16,8 @@ class UserSeeder extends Seeder
     {
         $roles = Role::pluck('id')->toArray();
         $akun = [
-            ['username' => 'gudang123', 'email' => 'gudang123@gmail.com', 'password' => Hash::make('12341234')],
             ['username' => 'admin123', 'email' => 'admin123@gmail.com', 'password' => Hash::make('12341234')],
+            ['username' => 'gudang123', 'email' => 'gudang123@gmail.com', 'password' => Hash::make('12341234')],
             ['username' => 'pengiriman123', 'email' => 'pengiriman123@gmail.com', 'password' => Hash::make('12341234')],
         ];
         

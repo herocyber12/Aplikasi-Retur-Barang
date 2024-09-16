@@ -8,6 +8,7 @@ use App\Models\Produk;
 use App\Models\Retur;
 use App\Models\Stock;
 use App\Models\Role;
+use App\Models\ReturPembelian;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
@@ -16,7 +17,9 @@ use Illuminate\Support\Facades\Hash;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\ServiceProvider;
 use App\Exports\ReturExportBaik;
+use App\Exports\BarangKeluarExport;
 use App\Services\LaporanStokService;
+use App\Services\LaporanBarangKeluarService;
 use Illuminate\Support\Facades\Crypt;
 
 class ReturController extends Controller
@@ -25,16 +28,20 @@ class ReturController extends Controller
      * Display a listing of the resource.
      */
     protected $laporanstok;
-    public function __construct(LaporanStokService $laporanstok)
+    protected $barangkeluar;
+
+    public function __construct(LaporanStokService $laporanstok, LaporanBarangKeluarService $barangkeluar)
     {
         $this->laporanstok = $laporanstok;
+        $this->barangkeluar = $barangkeluar;
     }
 
     public function index()
     {
         
-        $returs = Retur::with('produk')->get();
-        return view('dataretur',compact('returs'));
+        $returs = Retur::with('produk')->orderBy('created_at','DESC')->paginate(10);
+        $produk = Produk::all();
+        return view('dataretur',compact('returs','produk'));
     }
 
     /**
@@ -42,32 +49,49 @@ class ReturController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'kode_barang' => 'required',
-            'nama_produk' => 'required',
-            'jenis_barang' => 'required',
-            'harga_produk' => 'required',
-            'supplier' => 'required',
-            'no_hp_supplier' => 'required|numeric',
-            'alamat_supplier' => 'required',
-            'tgl_masuk_gudang' => 'required',
-            'jumlah_barang' => 'required|numeric',
-            'kondisi_barang' => 'required',
-        ]);
+        if($request->produk){
+            $produk = Produk::where('id',$request->produk)->latest()->first();
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+        } else {
+
+            $validator = Validator::make($request->all(), [
+                'kode_barang' => 'required',
+                'nama_produk' => 'required',
+                'jenis_barang' => 'required',
+                'harga_produk' => 'required',
+                'supplier' => 'required',
+                'no_hp_supplier' => 'required|numeric',
+                'alamat_supplier' => 'required',
+                'tgl_masuk_gudang' => 'required',
+                'jumlah_barang' => 'required|numeric',
+                'kondisi_barang' => 'required',
+            ]);
+    
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+
+            $produk = Produk::create([
+                'kode_barang' => $request->kode_barang,
+                'nama_produk' => $request->nama_produk,
+                'jenis_barang' => $request->jenis_barang,
+                'harga_produk' => $request->harga_produk
+            ]);
+            if(!$produk){
+                return redirect()->back()->with('error','Terjadi Kesalahan Saat Input Data Mohon Periksa Kembali');
+            }
+
         }
 
-        $produk = Produk::create([
-            'kode_barang' => $request->kode_barang,
-            'nama_produk' => $request->nama_produk,
-            'jenis_barang' => $request->jenis_barang,
-            'harga_produk' => $request->harga_produk
+        $insert = Retur::create([
+            'produks_id' => $produk->id,
+            'supplier' => $request->supplier,
+            'no_hp_supplier' => $request->no_hp_supplier,
+            'alamat_supplier' => $request->alamat_supplier,
+            'tgl_masuk_gudang' => $request->tgl_masuk_gudang,
+            'jumlah_barang' => $request->jumlah_barang,
+            'kondisi_barang' => $request->kondisi_barang,
         ]);
-        if(!$produk){
-            return redirect()->back()->with('error','Terjadi Kesalahan Saat Input Data Mohon Periksa Kembali');
-        }
 
         $stok = Stock::where('produk_id',$produk->id)->latest()->first();
 
@@ -86,6 +110,7 @@ class ReturController extends Controller
 
             $insert = Stock::create([
                 'produk_id' => $produk->id,
+                'retur_id' => $insert->id,
                 'stok' => $stok,
                 'stok_masuk' => $stok_masuk,
                 'stok_keluar' => $stok_keluar,
@@ -95,19 +120,7 @@ class ReturController extends Controller
             if(!$insert){
                 return redirect()->back()->with('error','Terjadi Kesalahan Saat Input Data Mohon Periksa Kembali');
             }
-            
-
         }
-
-        $insert = Retur::create([
-            'produks_id' => $produk->id,
-            'supplier' => $request->supplier,
-            'no_hp_supplier' => $request->no_hp_supplier,
-            'alamat_supplier' => $request->alamat_supplier,
-            'tgl_masuk_gudang' => $request->tgl_masuk_gudang,
-            'jumlah_barang' => $request->jumlah_barang,
-            'kondisi_barang' => $request->kondisi_barang,
-        ]);
 
         if(!$insert){
             return redirect()->back()->with('error','Terjadi Kesalahan Saat Input Data Mohon Periksa Kembali');
@@ -143,16 +156,11 @@ class ReturController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        
-        // Temukan retur berdasarkan retur_id dari request
-        $retur = Retur::find(Crypt::decrypt($request->jkUgdw720P62))->first();
-        // $produk = Produk::find($id);
-        
+        $retur = Retur::where('id',Crypt::decrypt($request->jkUgdw720P62))->first();
         if(!$retur){
             return redirect()->back()->with('error','Produk tidak ditemukan');
         }
         
-        // Update data produk
         Produk::where('id',$retur->produks_id)->update([
             'kode_barang' => $request->kode_barang_edit,
             'nama_produk' => $request->nama_produk_edit,
@@ -162,32 +170,40 @@ class ReturController extends Controller
         
         $stok = Stock::where('produk_id', $retur->produks_id)->latest()->first();
 
-        // Tentukan stok, stok masuk, dan stok keluar berdasarkan kondisi barang
         if ($request->kondisi_barang_edit === "Baik") {
-            // Jika stok tidak ditemukan, buat stok baru dari jumlah yang diedit
             $stok_sekarang = is_null($stok) ? $request->jumlah_barang_edit : $stok->stok + $request->jumlah_barang_edit;
             $stok_masuk = $request->jumlah_barang_edit;
             $stok_keluar = 0;
         } else if ($request->kondisi_barang_edit === "Rusak") {
-            // Untuk barang rusak, kurangi stok
             $stok_sekarang = is_null($stok) ? 0 : $stok->stok - $request->jumlah_barang_edit;
             $stok_masuk = 0;
             $stok_keluar = 0;
         }
 
-        // Update atau buat stok baru jika belum ada
-        $update = Stock::where('produk_id',$retur->produks_id)->latest()->update(
+        // $update = Stock::where('produk_id',$retur->produks_id)->latest()->update(
+        //     [
+        //         'stok' => $stok_sekarang,
+        //         'stok_masuk' => $stok_masuk,
+        //         'stok_keluar' => $stok_keluar,
+        //         'tanggal' => Carbon::now()->format("Y-m-d"),
+        //     ]
+
+        // );
+
+        $update = Stock::updateOrCreate(
+            ['produk_id' => $retur->produks_id],
             [
+                'retur_id' => $retur->id,
                 'stok' => $stok_sekarang,
                 'stok_masuk' => $stok_masuk,
                 'stok_keluar' => $stok_keluar,
-                'tanggal' => Carbon::now()->format("Y-m-d"),
+                'tanggal' => Carbon::now()->format('Y-m-d'),
             ]
-
         );
+
+        dd($update);
         
         if ($retur) {
-            // Update data retur jika ditemukan
             $retur->update([
                 'supplier' => $request->supplier_edit,
                 'no_hp_supplier' => $request->no_hp_supplier_edit,
@@ -197,7 +213,6 @@ class ReturController extends Controller
                 'kondisi_barang' => $request->kondisi_barang_edit,
             ]);
         } else {
-            // Jika retur tidak ditemukan, buat entri baru
             Retur::create([
                 'produks_id' => $retur->id,
                 'supplier' => $request->supplier_edit,
@@ -224,11 +239,17 @@ class ReturController extends Controller
     {
         $data = Retur::where('id',$id)->first();
         $id = $data->produks_id;
-        $data->delete();
-        $stok = Stock::where('produk_id',$id)->first();
+        $id_retur = $data->id;
+        $stok = Stock::where('produk_id',$id)->where('retur_id',$id_retur)->first();
         if($stok){
             $stok->delete();
         }
+        $returPembelian = ReturPembelian::where('retur_id',$id_retur)->first();
+        if($returPembelian){
+            $returPembelian->delete();
+        }
+        $data->delete();
+        
         Produk::where('id',$id)->delete();
 
         return redirect()->back()->with('success','Berhasil Hapus Data');
@@ -236,24 +257,20 @@ class ReturController extends Controller
 
     public function downloadLaporan()
     {
-        return $this->laporanstok->generateStockReport();
+        return $this->laporanstok->renderLaporanStok();
     }
 
     public function kirimBarang($id)
     {
         try {
-            // Dekripsi ID dan ambil data
             $id = Crypt::decrypt($id);
             $data = Retur::findOrFail($id);
     
-            // Ambil stok terakhir untuk produk terkait
             $stok = Stock::where('produk_id', $data->produks_id)->latest()->first();
     
-            // Hitung stok saat ini
             $stok_sekarang = optional($stok)->stok ? $stok->stok - $data->jumlah_barang : 0;
             $stok_keluar = $data->jumlah_barang;
     
-            // Upsert stok
             Stock::updateOrCreate(
                 ['produk_id' => $data->produks_id],
                 [
@@ -265,25 +282,30 @@ class ReturController extends Controller
                 ]
             );
     
-            // Update kondisi barang
             $data->update([
                 'kondisi_barang' => 'Rusak(Sudah Diproses)',
             ]);
-    
-            // Berikan respons JSON yang sukses
+
+            $returs = ReturPembelian::with('retur.produk')->get();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Barang akan segera dikirim ke supplier.',
                 'title' => 'Berhasil',
+                'data' => $returs
             ], 200);
         } catch (\Exception $e) {
-            // Tangani error dan berikan respons JSON
             return response()->json([
                 'status' => 'error',
                 'title' => 'Gagal',
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                'data' => $returs,
             ], 500);
         }
+    }
+
+    public function laporanStokKeluar ()
+    {
+        return $this->barangkeluar->renderBarangKeluar();
     }
 }
 

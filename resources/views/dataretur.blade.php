@@ -6,8 +6,9 @@
 			<div class="card-header d-md-flex">
 				<h6>Data Barang Gudang</h6>
 				<div class="ms-auto">
-					<button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal"> <i class="fa fa-plus"></i> Buat
-						Data Barang Masuk</button>
+					<button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahStok" {{Auth::user()->id_role == 1 ? 'disabled' : ''}}> <i class="fa fa-plus"></i> Tambah Stok Barang Masuk</button>
+					<button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal" {{Auth::user()->id_role == 1 ? 'disabled' : ''}}> <i class="fa fa-plus"></i> Buat
+						Data Baru Barang Masuk</button>
 				</div>
 				<!-- Modal -->
 				<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -23,6 +24,110 @@
 								<form action="{{ route('retur.store') }}" method="post" class="row">
 									@csrf
 									<div class="mb-3">
+										<label for="">Kode Barang</label>
+										<input type="text" name="kode_barang" class="form-control @error('kode_barang') is-invalid @enderror" placeholder="Masukan Kode Barang" value="{{ old('kode_barang') }}" required>
+										@error('kode_barang')
+										<div class="invalid-feedback">{{ $message }}</div>
+										@enderror
+									</div>
+								
+									<div class="mb-3">
+										<label for="">Nama Barang</label>
+										<input type="text" name="nama_produk" class="form-control @error('nama_produk') is-invalid @enderror" placeholder="Masukan Nama Barang" value="{{ old('nama_produk') }}" required>
+										@error('nama_produk')
+										<div class="invalid-feedback">{{ $message }}</div>
+										@enderror
+									</div>
+								
+									<div class="mb-3 col-xl-6">
+										<label for="">Jenis Barang</label>
+										<input type="text" name="jenis_barang" class="form-control @error('jenis_barang') is-invalid @enderror" placeholder="Masukan Jenis Barang" value="{{ old('jenis_barang') }}" required>
+										@error('jenis_barang')
+										<div class="invalid-feedback">{{ $message }}</div>
+										@enderror
+									</div>
+								
+									<div class="mb-3 col-xl-6">
+										<label for="">Harga Per Produk</label>
+										<input type="numeric" name="harga_produk" class="form-control @error('harga_produk') is-invalid @enderror" placeholder="Masukan Harga Produk" value="{{ old('harga_produk') }}" required>
+										@error('harga_produk')
+										<div class="invalid-feedback">{{ $message }}</div>
+										@enderror
+									</div>
+								
+									<div class="mb-3 col-xl-6">
+										<label for="">Supplier</label>
+										<input type="text" name="supplier" class="form-control @error('supplier') is-invalid @enderror" placeholder="Masukan Nama Supplier" value="{{ old('supplier') }}" required>
+										@error('supplier')
+										<div class="invalid-feedback">{{ $message }}</div>
+										@enderror
+									</div>
+								
+									<div class="mb-3 col-xl-6">
+										<label for="">No HP Supplier</label>
+										<input type="text" class="form-control @error('no_hp_supplier') is-invalid @enderror" minlength="6" maxlength="13" name="no_hp_supplier" placeholder="Contoh : 08123456789" value="{{ old('no_hp_supplier') }}" required>
+										@error('no_hp_supplier')
+										<div class="invalid-feedback">{{ $message }}</div>
+										@enderror
+									</div>
+								
+									<div class="mb-3">
+										<label for="">Alamat Supplier</label>
+										<textarea class="form-control @error('alamat_supplier') is-invalid @enderror" rows="3" name="alamat_supplier" placeholder="Masukan alamat supplier" required>{{ old('alamat_supplier') }}</textarea>
+										@error('alamat_supplier')
+										<div class="invalid-feedback">{{ $message }}</div>
+										@enderror
+									</div>
+								
+									<div class="mb-3 col-xl-4">
+										<label for="">Tanggal Barang Masuk Gudang</label>
+										<input type="date" class="form-control @error('tgl_masuk_gudang') is-invalid @enderror" name="tgl_masuk_gudang" value="{{ old('tgl_masuk_gudang') }}" required>
+										@error('tgl_masuk_gudang')
+										<div class="invalid-feedback">{{ $message }}</div>
+										@enderror
+									</div>
+								
+									<div class="mb-3 col-xl-4">
+										<label for="">Jumlah Barang</label>
+										<input type="number" class="form-control @error('jumlah_barang') is-invalid @enderror" name="jumlah_barang" placeholder="Masukan Jumlah Retur" value="{{ old('jumlah_barang') }}" required>
+										@error('jumlah_barang')
+										<div class="invalid-feedback">{{ $message }}</div>
+										@enderror
+									</div>
+								
+									<div class="mb-3 col-xl-4">
+										<label for="">Kondisi Barang</label>
+										<select class="form-control @error('kondisi_barang') is-invalid @enderror" name="kondisi_barang">
+											<option value="Baik" {{ old('kondisi_barang') == 'Baik' ? 'selected' : '' }}>Baik</option>
+											<option value="Rusak" {{ old('kondisi_barang') == 'Rusak' ? 'selected' : '' }}>Rusak</option>
+										</select>
+										@error('kondisi_barang')
+										<div class="invalid-feedback">{{ $message }}</div>
+										@enderror
+									</div>
+								
+									<div class="modal-footer">
+										<button type="submit" class="btn btn-primary">Buat</button>
+									</div>
+								</form>
+							</div>								
+						</div>
+					</div>
+				</div>
+				{{-- Modal Tambah Stok --}}
+				<div class="modal fade" id="modalTambahStok" tabindex="-1" aria-labelledby="modalTambahStokLabel"
+					aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="modalTambahStokLabel">Form Pendataan Barang</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal"
+									aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<form action="{{ route('retur.store') }}" method="post" class="row">
+									@csrf
+									{{-- <div class="mb-3">
 										<label for="">Kode Barang</label>
 										<input type="text" name="kode_barang" class="form-control @error('kode_barang') is-invalid @enderror" placeholder="Masukan Kode Barang" value="{{ old('kode_barang') }}">
 										@error('kode_barang')
@@ -52,11 +157,22 @@
 										@error('harga_produk')
 										<div class="invalid-feedback">{{ $message }}</div>
 										@enderror
-									</div>
+									</div> --}}
 								
+									<div class="mb-3 col-xl-12">
+										<label for="">Produk <span class="text-danger">Silahkan pilih produk yang ingin ditambah stok</span> </label>
+										<select name="produk" class="form-control" id="">
+											@foreach ($produk as $pr )
+												<option value="{{$pr->id}}">{{$pr->nama_produk}} ({{$pr->jenis_barang}})</option>
+											@endforeach
+										</select>
+										@error('supplier')
+										<div class="invalid-feedback">{{ $message }}</div>
+										@enderror
+									</div>
 									<div class="mb-3 col-xl-6">
 										<label for="">Supplier</label>
-										<input type="text" name="supplier" class="form-control @error('supplier') is-invalid @enderror" placeholder="Masukan Nama Supplier" value="{{ old('supplier') }}">
+										<input type="text" name="supplier" class="form-control @error('supplier') is-invalid @enderror" placeholder="Masukan Nama Supplier" value="{{ old('supplier') }}" required>
 										@error('supplier')
 										<div class="invalid-feedback">{{ $message }}</div>
 										@enderror
@@ -64,7 +180,7 @@
 								
 									<div class="mb-3 col-xl-6">
 										<label for="">No HP Supplier</label>
-										<input type="text" class="form-control @error('no_hp_supplier') is-invalid @enderror" minlength="6" maxlength="13" name="no_hp_supplier" placeholder="Contoh : 08123456789" value="{{ old('no_hp_supplier') }}">
+										<input type="text" class="form-control @error('no_hp_supplier') is-invalid @enderror" minlength="6" maxlength="13" name="no_hp_supplier" placeholder="Contoh : 08123456789" value="{{ old('no_hp_supplier') }}" required>
 										@error('no_hp_supplier')
 										<div class="invalid-feedback">{{ $message }}</div>
 										@enderror
@@ -72,15 +188,15 @@
 								
 									<div class="mb-3">
 										<label for="">Alamat Supplier</label>
-										<textarea class="form-control @error('alamat_supplier') is-invalid @enderror" rows="3" name="alamat_supplier" placeholder="Masukan alamat supplier">{{ old('alamat_supplier') }}</textarea>
+										<textarea class="form-control @error('alamat_supplier') is-invalid @enderror" rows="3" name="alamat_supplier" placeholder="Masukan alamat supplier" required>{{ old('alamat_supplier') }}</textarea>
 										@error('alamat_supplier')
 										<div class="invalid-feedback">{{ $message }}</div>
 										@enderror
 									</div>
 								
 									<div class="mb-3 col-xl-4">
-										<label for="">Tanggal Retur</label>
-										<input type="date" class="form-control @error('tgl_masuk_gudang') is-invalid @enderror" name="tgl_masuk_gudang" value="{{ old('tgl_masuk_gudang') }}">
+										<label for="">Tanggal Barang Masuk Gudang</label>
+										<input type="date" class="form-control @error('tgl_masuk_gudang') is-invalid @enderror" name="tgl_masuk_gudang" value="{{ old('tgl_masuk_gudang') }}" required>
 										@error('tgl_masuk_gudang')
 										<div class="invalid-feedback">{{ $message }}</div>
 										@enderror
@@ -88,7 +204,7 @@
 								
 									<div class="mb-3 col-xl-4">
 										<label for="">Jumlah Barang</label>
-										<input type="number" class="form-control @error('jumlah_barang') is-invalid @enderror" name="jumlah_barang" placeholder="Masukan Jumlah Retur" value="{{ old('jumlah_barang') }}">
+										<input type="number" class="form-control @error('jumlah_barang') is-invalid @enderror" name="jumlah_barang" placeholder="Masukan Jumlah Retur" value="{{ old('jumlah_barang') }}" required>
 										@error('jumlah_barang')
 										<div class="invalid-feedback">{{ $message }}</div>
 										@enderror
@@ -168,68 +284,99 @@
 															aria-label="Close"></button>
 													</div>
 													<div class="modal-body">
-														<form action="{{route('retur.update')}}" method="post" class="row">
+														<form action="{{ route('retur.update') }}" method="post" class="row">
 															@csrf
-															<!--
-																<div class="mb-3">
-																	<label for="">Kode Barang</label>
-																	<input type="text" class="form-control" placeholder="Masukan Kode Barang">
-																</div>
-																<div class="mb-3">
-																	<label for="">Nama Barang</label>
-																	<input type="text" class="form-control" placeholder="Masukan Nama Barang">
-																</div>
-						-->
-															<input type="hidden" name="jkUgdw720P62" value="{{Crypt::encrypt($retur->id)}}">
+															<!-- Hidden field for encrypted retur ID -->
+															<input type="hidden" name="jkUgdw720P62" value="{{ Crypt::encrypt($retur->id) }}">
+															
 															<div class="mb-3">
-																<label for="">Kode Barang</label>
-																<input type="text" name="kode_barang_edit" class="form-control" placeholder="Masukan Kode Barang" value="{{$retur->produk->kode_barang}}">
+																<label for="kode_barang_edit">Kode Barang</label>
+																<input type="text" id="kode_barang_edit" name="kode_barang_edit" class="form-control" placeholder="Masukan Kode Barang" value="{{ old('kode_barang_edit', $retur->produk->kode_barang) }}">
+																@error('kode_barang_edit')
+																	<div class="text-danger">{{ $message }}</div>
+																@enderror
 															</div>
+															
 															<div class="mb-3">
-																<label for="">Nama Barang</label>
-																<input type="text" name="nama_produk_edit" class="form-control" placeholder="Masukan Kode Barang" value="{{$retur->produk->nama_produk}}">
+																<label for="nama_produk_edit">Nama Barang</label>
+																<input type="text" id="nama_produk_edit" name="nama_produk_edit" class="form-control" placeholder="Masukan Nama Barang" value="{{ old('nama_produk_edit', $retur->produk->nama_produk) }}">
+																@error('nama_produk_edit')
+																	<div class="text-danger">{{ $message }}</div>
+																@enderror
 															</div>
+															
 															<div class="mb-3 col-xl-6">
-																<label for="">Jenis Barang</label>
-																<input type="text" name="jenis_barang_edit" class="form-control" placeholder="Masukan Kode Barang" value="{{$retur->produk->jenis_barang}}">
+																<label for="jenis_barang_edit">Jenis Barang</label>
+																<input type="text" id="jenis_barang_edit" name="jenis_barang_edit" class="form-control" placeholder="Masukan Jenis Barang" value="{{ old('jenis_barang_edit', $retur->produk->jenis_barang) }}">
+																@error('jenis_barang_edit')
+																	<div class="text-danger">{{ $message }}</div>
+																@enderror
 															</div>
+															
 															<div class="mb-3 col-xl-6">
-																<label for="">Harga Per Produk</label>
-																<input type="numeric" name="harga_produk_edit" class="form-control" placeholder="Masukan Kode Barang" value="{{$retur->produk->harga_produk}}">
+																<label for="harga_produk_edit">Harga Per Produk</label>
+																<input type="number" id="harga_produk_edit" name="harga_produk_edit" class="form-control" placeholder="Masukan Harga Produk" value="{{ old('harga_produk_edit', $retur->produk->harga_produk) }}">
+																@error('harga_produk_edit')
+																	<div class="text-danger">{{ $message }}</div>
+																@enderror
 															</div>
+															
 															<div class="mb-3 col-xl-6">
-																<label for="">Supplier</label>
-																<input type="text" name="supplier_edit"class="form-control" placeholder="Masukan Nama supplier" value="{{$retur->supplier}}">
+																<label for="supplier_edit">Supplier</label>
+																<input type="text" id="supplier_edit" name="supplier_edit" class="form-control" placeholder="Masukan Nama Supplier" value="{{ old('supplier_edit', $retur->supplier) }}">
+																@error('supplier_edit')
+																	<div class="text-danger">{{ $message }}</div>
+																@enderror
 															</div>
+															
 															<div class="mb-3 col-xl-6">
-																<label for="">No HP Supplier</label>
-																<input type="text" class="form-control" minlength="6" maxlength="13" name="no_hp_supplier_edit" placeholder="Contoh : 08123456789" value="{{$retur->no_hp_supplier}}">
+																<label for="no_hp_supplier_edit">No HP Supplier</label>
+																<input type="text" id="no_hp_supplier_edit" name="no_hp_supplier_edit" class="form-control" minlength="6" maxlength="13" placeholder="Contoh: 08123456789" value="{{ old('no_hp_supplier_edit', $retur->no_hp_supplier) }}">
+																@error('no_hp_supplier_edit')
+																	<div class="text-danger">{{ $message }}</div>
+																@enderror
 															</div>
+															
 															<div class="mb-3">
-																<label for="">Alamat Supplier</label>
-																<textarea class="form-control" rows="3" name="alamat_supplier_edit"
-																	placeholder="masukan alamat supplier">{{$retur->alamat_supplier}}</textarea>
+																<label for="alamat_supplier_edit">Alamat Supplier</label>
+																<textarea id="alamat_supplier_edit" class="form-control" rows="3" name="alamat_supplier_edit" placeholder="Masukan Alamat Supplier">{{ old('alamat_supplier_edit', $retur->alamat_supplier) }}</textarea>
+																@error('alamat_supplier_edit')
+																	<div class="text-danger">{{ $message }}</div>
+																@enderror
 															</div>
+															
 															<div class="mb-3 col-xl-4">
-																<label for="">Tanggal Retur</label>
-																<input type="date" class="form-control" name="tgl_masuk_gudang_edit" placeholder="Masukan Tanggal Barang" value="{{$retur->tgl_barang_masuk}}">
+																<label for="tgl_masuk_gudang_edit">Tanggal Barang Masuk Gudang</label>
+																<input type="date" id="tgl_masuk_gudang_edit" class="form-control" name="tgl_masuk_gudang_edit" placeholder="Masukan Tanggal Barang" value="{{ old('tgl_masuk_gudang_edit', $retur->tgl_masuk_gudang) }}">
+																@error('tgl_masuk_gudang_edit')
+																	<div class="text-danger">{{ $message }}</div>
+																@enderror
 															</div>
+															
 															<div class="mb-3 col-xl-4">
-																<label for="">Jumlah Barang</label>
-																<input type="number" class="form-control" name="jumlah_barang_edit" placeholder="Masukan Jumlah Retur" value="{{$retur->jumlah_barang}}">
+																<label for="jumlah_barang_edit">Jumlah Barang</label>
+																<input type="number" id="jumlah_barang_edit" class="form-control" name="jumlah_barang_edit" placeholder="Masukan Jumlah Retur" value="{{ old('jumlah_barang_edit', $retur->jumlah_barang) }}">
+																@error('jumlah_barang_edit')
+																	<div class="text-danger">{{ $message }}</div>
+																@enderror
 															</div>
+															
 															<div class="mb-3 col-xl-4">
-																<label for="">Kondisi Barang</label>
-																<select class="form-control" name="kondisi_barang_edit">
-																	<option value="Baik" {{$retur->kondisi_barang == "Baik" ? 'selected' : ''}}>Baik</option>
-																	<option value="Rusak"{{$retur->kondisi_barang == "Rusak" ? 'selected' : ''}}>Rusak</option>
+																<label for="kondisi_barang_edit">Kondisi Barang</label>
+																<select id="kondisi_barang_edit" class="form-control" name="kondisi_barang_edit">
+																	<option value="Baik" {{ old('kondisi_barang_edit', $retur->kondisi_barang) == 'Baik' ? 'selected' : '' }}>Baik</option>
+																	<option value="Rusak" {{ old('kondisi_barang_edit', $retur->kondisi_barang) == 'Rusak' ? 'selected' : '' }}>Rusak</option>
 																</select>
+																@error('kondisi_barang_edit')
+																	<div class="text-danger">{{ $message }}</div>
+																@enderror
 															</div>
-														</div>
-														<div class="modal-footer">
-															<button type="submit" class="btn btn-success">Ubah</button>
-														</div>
-													</form>
+															
+															<div class="modal-footer">
+																<button type="submit" class="btn btn-success">Ubah</button>
+															</div>
+														</form>
+														
 												</div>
 											</div>
 										</div>
@@ -239,7 +386,7 @@
 							@endforeach
 						</tbody>
 					</table>
-					{{-- {{ $returs->links() }} --}}
+					{{ $returs->links() }}
 				</div>
 			</div>
 		</div>
