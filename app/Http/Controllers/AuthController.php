@@ -65,7 +65,14 @@ class AuthController extends Controller
       
       return redirect()->back->with('error','Gagal membuat akun');
     }
-
+    
+    public function showUser()
+    {
+      $user = User::with('role')->get();
+      $role = Role::all();
+      return view('datauser',compact('user','role'));
+    }
+    
     public function logout()
     {
         Auth::logout();
