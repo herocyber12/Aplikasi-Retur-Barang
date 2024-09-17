@@ -52,6 +52,12 @@ Route::middleware('auth')->group(function(){
         Route::get('/laporan-barang-masuk','index')->name('laporan.masuk');
         Route::get('/stok','stok_semua')->name('stok');
     });
+    
+    Route::get('/data-sr',[AuthController::class,'showUser'])->name('data.sr');
+    Route::post('/data-sr',[AuthController::class,'regis'])->name('data.crsr');
+    Route::post('/update-sr/{id}',[AuthController::class,'updatesr'])->name('data.upsr');
+    Route::get('/des-sr/{id}',[AuthController::class,'hapus'])->name('sr.hapus')
+    
 
 });
 Route::get('/', function () {
