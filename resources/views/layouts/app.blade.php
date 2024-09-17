@@ -92,27 +92,35 @@
                         Data Barang di Retur
                     </a>
                 </li>
-                @endif
-                @if (Auth::user()->id_role === 3)
                 <li class="nav-item">
                     <a href="{{route('laporan.keluar')}}" class="nav-link text-white {{ request()->routeIs('laporan.keluar') ? 'active':'' }}">
                         <i class="fa fa-arrow-right-from-bracket"></i>
                         Data Barang Keluar
                     </a>
                 </li>
-                @endif
                 <li class="nav-item">
                     <a href="{{route('laporan.masuk')}}" class="nav-link text-white {{ request()->routeIs('laporan.masuk') ? 'active':'' }}">
                         <i class="fa fa-arrow-right-to-bracket"></i>
                         Data Barang Masuk
                     </a>
                 </li>
+                @endif
                 <li class="nav-item">
                     <a href="{{route('stok')}}" class="nav-link text-white {{ request()->routeIs('stok') ? 'active':'' }}">
                         <i class="fa fa-list"></i>
                         Stok
                     </a>
                 </li>
+                @if (Auth::user()->id_role === 1)
+                    
+                <li class="nav-item">
+                    <a href="{{route('data.sr')}}" class="nav-link text-white {{ request()->routeIs('data.sr') ? 'active':'' }}">
+                        <i class="fa fa-people-group"></i>
+                        Data User
+                    </a>
+                </li>
+                @endif
+
                 <li class="nav-item">
                     <button class="btn btn-secondary d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
                         <i class="fa fa-arrow-left"></i>

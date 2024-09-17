@@ -200,8 +200,6 @@ class ReturController extends Controller
                 'tanggal' => Carbon::now()->format('Y-m-d'),
             ]
         );
-
-        dd($update);
         
         if ($retur) {
             $retur->update([

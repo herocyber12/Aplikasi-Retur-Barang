@@ -53,10 +53,14 @@ Route::middleware('auth')->group(function(){
         Route::get('/stok','stok_semua')->name('stok');
     });
     
-    Route::get('/data-sr',[AuthController::class,'showUser'])->name('data.sr');
-    Route::post('/data-sr',[AuthController::class,'regis'])->name('data.crsr');
-    Route::post('/update-sr/{id}',[AuthController::class,'updatesr'])->name('data.upsr');
-    Route::get('/des-sr/{id}',[AuthController::class,'hapus'])->name('sr.hapus')
+    Route::middleware('role:1')->group(function(){
+        Route::controller(AuthController::class)->group(function(){
+            Route::get('/data-sr','showUser')->name('data.sr');
+            Route::post('/data-sr','regis')->name('data.crsr');
+            Route::post('/update-sr/{id}','updatesr')->name('data.upsr');
+            Route::get('/des-sr/{id}','hapus')->name('sr.hapus');
+        });
+    });
     
 
 });

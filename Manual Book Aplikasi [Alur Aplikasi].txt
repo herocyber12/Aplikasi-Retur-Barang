@@ -1,17 +1,22 @@
 ----------------------------
 Sistem Retur Pengembalian
 ---------------------------
+Spec:
+Laravel 10
+Boostrap 5.3.2
+PostgreSQL 16
+================
 
 Migrasi v	=> php artisan migrate (nama database taskwd)
-Data Seed v	=> php artisan db:seed
+Data Seed v	=> php artisan db:seed (Hanya User)
 
 ---------------------------
 Alur Aplikasi
 
 Bagian Gudang
 ========================
-Bagian Pengiriman Membuat Data Barang Yang Datang Ke Gudang dengan klik tombol "Tambah Stok Barang Masuk" atau "Buat Data Baru Barang Masuk" Jika Kondisi Barang Baik Data akan masuk ke database dan menampilkan laporan di dashboard Admin dan Gudang sekaligus setelah 3 detik data berhasil dibuat maka
-secara otomatis akan membuat laporan stok berupa excel. Dan ketika rusak Admin akan menerima laporan barang yang rusak berupa tampilan table di halaman "Data Barang Rusak"
+Bagian Pengiriman Membuat Data Barang Yang Datang Ke Gudang dengan klik tombol "Tambah Stok Barang Masuk" atau "Buat Data Baru Barang Masuk" Jika Kondisi Barang Baik Data akan masuk ke database dan menampilkan laporan di dashboard Admin dan Gudang kemudian setelah 3 detik data berhasil dibuat maka
+secara otomatis akan membuat laporan stok berupa excel. Ketika kondisi barang rusak Admin akan menerima laporan barang yang rusak berupa tampilan table di halaman "Data Barang Rusak"
 ========================
 
 Bagian Admin
@@ -22,23 +27,24 @@ secara otomatis akan membuat Laporan retur pembelian berupa excel. Data yang ber
 
 Bagian Pengiriman
 ======================
-Setelah admin membuat data yang akan diretur pembelian. Bagian pengiriman akan menerima laporan barang yang diretur dan mengkonfirmasi barang keluar dengan menekan tombol "Entri Barang Keluar" dan secara otomatis akan membuat data barang keluar
-dan mengunduh data laporan barnag keluar berupa excel serta data yang masuk ke database data dapat dilihat di halaman "Data Barang Keluar"
+Setelah admin membuat data yang akan diretur pembelian. Bagian pengiriman akan menerima laporan barang yang diretur dan mengkonfirmasi barang keluar dengan menekan tombol "Entri Barang Keluar" dan secara otomatis akan membuat data barang keluar dari data yang sebelumnya sudah di simpan di database 
+dan mengunduh data laporan barang keluar berupa excel serta data yang masuk ke database. Data dapat dilihat di halaman "Data Barang Keluar"
 
 Hak Akses
 --------------------
 Bagian Gudang
 Dapat Mengakses halaman :
 - Data Gudang (Membuat, Mengedit, Menghapus, Melihat Data)
-- Data Barang Masuk (Hanya Melihat Data)
 - Stok (Hanya Melihat)
 
 Bagian Admin
 - Data Gudang (Hanya Melihat)
 - Data Barang Rusak (Hanya Melihat Data Barang Rusak, Membuat data barang yang diretur)
 - Data Barang Di Retur (Mengedit dan Menghapus)
+- Data Barang Keluar (Hanya Melihat Data)
 - Data Barang Masuk (Hanya Melihat Data)
 - Stok (Hanya Melihat)
+- Data Use (Membuat, Melihat, Mengedit, Menghapus User)
 
 Bagian Pengiriman
 - Data Gudang (Hanya Melihat)

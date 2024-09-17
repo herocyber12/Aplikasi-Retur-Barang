@@ -6,7 +6,7 @@
 			<div class="card-header d-md-flex">
 				<h6>Data Barang Gudang</h6>
 				<div class="ms-auto">
-					<button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahStok" {{Auth::user()->id_role == 1 ? 'disabled' : ''}}> <i class="fa fa-plus"></i> Tambah Stok Barang Masuk</button>
+					<button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahStok" {{ Auth::user()->id_role == 1 || $produk->count() == 0 ? 'disabled' : '' }}> <i class="fa fa-plus"></i> Tambah Stok Barang Masuk</button>
 					<button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal" {{Auth::user()->id_role == 1 ? 'disabled' : ''}}> <i class="fa fa-plus"></i> Buat
 						Data Baru Barang Masuk</button>
 				</div>

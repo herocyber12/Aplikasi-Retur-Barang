@@ -20,12 +20,12 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            // RoleSeeder::class,
-            // UserSeeder::class
-            ProduksTableSeeder::class,
-            RetursTableSeeder::class,
-            ReturPembeliansTableSeeder::class,
-            StocksTableSeeder::class
+            RoleSeeder::class,
+            UserSeeder::class
+            // ProduksTableSeeder::class,
+            // RetursTableSeeder::class,
+            // ReturPembeliansTableSeeder::class,
+            // StocksTableSeeder::class
         ]);
     }
 }
