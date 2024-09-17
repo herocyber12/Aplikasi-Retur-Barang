@@ -55,7 +55,7 @@ class AuthController extends Controller
         $insert = User::create([
           'username' => $request->username;
           'email' => $request->email;
-          'password' => $request->password;
+          'password' => Hash::make($request->password);
           'id_role' => $request->role;
           ]);
           
@@ -71,6 +71,44 @@ class AuthController extends Controller
       $user = User::with('role')->get();
       $role = Role::all();
       return view('datauser',compact('user','role'));
+    }
+    
+    public function updatesr(Request $request,$id)
+    {
+      $id = Crypt::decrypt($id);
+      $validator = Validator::make($request->all(),[
+        'username_edit' => 'required',
+        'email_edit' => 'required|email',
+        'password_edit' => 'required|password',
+        'role_edit' => 'required|exist:roles,id'
+        ]);
+        
+        if($validator->fails()){
+          return redirect()->back()->withError($validator)->withInput();
+        }
+        
+        $insert = User::where('id',$id)->update([
+          'username' => $request->username_edit;
+          'email' => $request->email_edit;
+          'password' => Hash::make($request->password_edit);
+          'id_role' => $request->role_edit;
+          ]);
+          
+      if($insert){
+        return redirect()->back()->with('success','Berhasil Ubah Akun')
+      }
+      
+      return redirect()->back->with('error','Gagal Ubah akun');
+    }
+    
+    public function hapus($id)
+    {
+      $delete = User::where('id',Crypt::decrypt($id))->delete();
+      
+      if(!$delete){
+        return redirect()->back->with('error','Gagal Hapus Data');
+      }
+      return redirect()->back()->with('success','Berhasil Hapus Data');
     }
     
     public function logout()
